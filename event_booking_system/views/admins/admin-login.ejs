@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>admin login</title>
+
+    <style>
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>welcome to</h1>
+    <h1>Admin Login Page</h1>
+    
+    <form action="/admins/login" method="post">
+      <label for="">email:</label>
+      <input type="text" required name="email" id="" />
+
+      <br />
+
+      <label for="">password:</label>
+      <input type="password" required name="password" />
+      <br />
+
+      <button type="submit">login</button>
+    </form>
+
+    <% if (locals.error ) { %>
+     <p> <%= error %></p>
+    <% } %>
+  </body>
+</html>

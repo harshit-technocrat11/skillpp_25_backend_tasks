@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>user profile</title>
+
+    <style>
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- message -->
+
+    <h2>welcome to user profile!!</h2>
+
+    <% if (locals.msg) { %>
+    <p><%= msg %></p>
+
+    <% } %> <% if (locals.name && locals.email) { %>
+    <h2>user name: <%= name %></h2>
+    <h2>email: <%= email %></h2>
+    <% } %>
+
+    <br />
+
+    <h3>my bookings:</h3>
+
+    <br />
+
+    <% if (locals.myBookings) { %>
+
+    <table border="1">
+      <thead>
+        <th>sl no.</th>
+        <th>Booked on:</th>
+        <th>event name</th>
+        <th>Venue</th>
+        <th>date</th>
+        <th>Event ID</th>
+        <th>actions</th>
+      </thead>
+
+      <% myBookings.forEach((booking,index) => { %>
+      <tr>
+        <td><%= index+ 1 %></td>
+        <td><%= booking.bookingDate %></td>
+        <td><%= booking.eventName %></td>
+        <td><%= booking.Venue %></td>
+        <td><%= booking.Event_date %></td>
+        <td><%= booking.bookingId %></td>
+        <td>
+          <!-- cancel booking  -->
+          <form
+            action="/users/cancel-booking/:<%= booking._id %>?_method=DELETE"
+            method="POST"
+            style="display: inline"
+            onsubmit="return confirm('are you sure you want to cancel this booking?')"
+          >
+            <button type="submit">cancel</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </table>
+
+    <% } %>
+
+    <br />
+    <h3>available events</h3>
+    <br />
+
+    <% if (locals.availableEvents) { %>
+    <table border="1">
+      <thead>
+        <th>sl no.</th>
+        <th>Event Name</th>
+        <th>Date</th>
+        <th>Venue</th>
+        <th>Available seats</th>
+        <th>Event ID</th>
+      </thead>
+
+      <% availableEvents.forEach((e,index) => { %>
+      <tr>
+        <td><%= index+ 1 %></td>
+        <td><%= e.name %></td>
+        <td><%= e.date %></td>
+        <td><%= e.location %></td>
+        <td><%= e.capacity - e.bookedSeats %></td>
+
+        <td>
+          <%= e._id %>
+          <!-- book event  -->
+          <form
+            method="post"
+            action="/users/book-event?eventId=<%= e._id %>"
+            onsubmit="return confirm('do you want to book this event?')"
+          >
+            <button type="submit">Book Now</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </table>
+
+    <% } %>
+  </body>
+</html>

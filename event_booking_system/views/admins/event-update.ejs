@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update event</title>
+  </head>
+  <body>
+
+    <% if (locals.status) { %>
+    <p><%= status %></p>
+
+    <% } %> <% if (locals.error) { %>
+    <p><%= error %></p>
+
+    <% } %> <% if (locals.event) { %>
+
+    <p>Your selected event is :</p>
+
+    <table border="1">
+      <thead>
+        <th>Event Name</th>
+        <th>Venue</th>
+        <th>Capacity</th>
+        <th>Booked Seats</th>
+        <th>Date</th>
+      </thead>
+
+      <tr>
+        <td><%= event.name %></td>
+        <td><%=event.location %></td>
+        <td><%= event.capacity %></td>
+        <td><%= event.bookedSeats %></td>
+        <td><%= event.date %></td>
+      </tr>
+    </table>
+
+    <h3>enter updated data:</h3>
+
+    <form action="/admins/events/<%= event._id %>" method="post">
+      <label for="">Event Name:</label>
+      <input required type="text" name="name" id="" />
+
+      <br />
+      <label for="">location:</label>
+      <input required type="text" name="location" id="" />
+      <br />
+
+      <label for="">capacity:</label>
+      <input required type="text" name="capacity" id="" />
+      <br />
+
+      <label for="">Date:</label>
+      <input required type="datetime-local" name="date" id="" />
+
+      <br />
+      <button type="submit">submit</button>
+    </form>
+
+    <% } %>
+
+   
+
+    <% if (locals.UpdatedEvent) { %>
+    <table border="1">
+      <thead>
+        <th>Event Name</th>
+        <th>Venue</th>
+        <th>Capacity</th>
+        <th>Booked Seats</th>
+        <th>Date</th>
+      </thead>
+
+      <tr>
+        <td><%= UpdatedEvent.name %></td>
+        <td><%=UpdatedEvent.location %></td>
+        <td><%= UpdatedEvent.capacity %></td>
+        <td><%= UpdatedEvent.bookedSeats %></td>
+        <td><%= UpdatedEvent.date %></td>
+      </tr>
+    </table>
+     <% } %>
+
+
+     <h4>Go to admin dashboard</h4>
+    
+    <form action="/admins/dashboard" method="get">
+        <button type="submit">click here</button>
+    </form>
+  </body>
+</html>

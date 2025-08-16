@@ -10,21 +10,36 @@ const getUser = auth.getUser;
 // register
 async function handleUserRegister(req, res) {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, confirmPassword } = req.body;
+
+    if (confirmPassword!== password){
+      res.render('users-register',{error: "both passwords do not match, try again"})
+    }
 
     const user = await User.create({
       name: name,
       email: email,
       password: password,
       role: "user",
+
     });
 
     console.log("user created :", user);
-    res.status(201).json({ message: "user registration successful" });
+
+    // res.status(201).json({ message: "user registration successful" });
+
+    res.render("users-register", { msg: "user registration successful, now log into your account" });
+    
+    
+
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    // res.status(500).json({ msg: err.message });
+    res.render("users-register", {error: 'enter unique data'});
   }
 }
+
+
+
 
 // login
 async function handleUserLogin(req, res) {
@@ -37,41 +52,116 @@ async function handleUserLogin(req, res) {
   console.log("this is the user object id: ", user.id);
 
   if (!user) {
-    // return res.render("login", {
-    //   error: "invalid username or password",
-    // });
-
-    return res.json({ msg: "invalid username or password" });
+    return res.render("users-login", {
+      error: "invalid username or password",
+    });
   }
 
   //signing in user
 
   const jwt_token = setUser(user); //jwt token generated
 
-  res.cookie("uid", jwt_token); //uid- is just a cookie name
+  res.cookie("jwtToken", jwt_token); //cookie name- jwttoken
 
-  //events - only booked by the user
-  const events = await Booking.find({ user: user._id });
-
-  //homepage - redireced
-  //   return res.render("home", { events: events, email: user.email });
-
-  return res.json({ my_bookings: events });
+  res.redirect("/users/user-profile");
 }
+
+
+
+
+//user profile
+async function handleUserProfile(req, res) {
+  try {
+    console.log("req.user in handler", req.user);
+    console.log("req.user.name", req.user.name);
+    
+
+    //   const my_bookings = await Booking.find({ userId: userId });
+
+    const my_bookings = await Booking.find({ createdBy: req.user._id })
+      .populate("eventId", "name  date location capacity bookedSeats")
+      .populate("userId", "name  email");
+
+
+      //polished data 
+      console.log('my_bookings',my_bookings)
+    const allbookings = my_bookings.map((b) => ({
+      bookingId: b._id,
+      username: b.userId.name,
+      userId: b.userId._id,
+      eventName: b.eventId.name ,
+      eventId: b.eventId._id,
+      Venue:b.eventId.location,
+      capacity:  b.eventId.capacity ,
+      Event_date:b.eventId.date ,
+      bookingDate: b.bookingDate,
+    }));
+
+    allbookings.forEach((b) =>
+      console.log("userid:", b.userId._id, "eventId:", b.eventId._id)
+    );
+
+    const userId = allbookings[0].userId._id
+
+    const IDs_of_events_booked_byuser = my_bookings.map((b) => b.eventId._id)
+
+    console.log("IDs_of_events_booked_byuser", IDs_of_events_booked_byuser);
+
+   
+      const availableEvents = await Event.find({
+        _id: {$nin: IDs_of_events_booked_byuser},
+
+        $expr: {$lt: ["$bookedSeats", "$capacity"]}
+
+      }).select("name date location  capacity bookedSeats");
+
+      availableEvents.forEach((b)=> console.log( "eventId:", b._id))
+
+      console.log('available events: ', availableEvents)
+      return res.render("users-profile.ejs", {
+        myBookings: allbookings,
+        availableEvents: availableEvents,
+        name: req.user.name,
+        email: req.user.email,
+        userId: userId,
+      });
+
+   
+
+  } catch (err) {
+    console.error(err);
+
+    res.render("users-profile.ejs", {
+      msg: "internal server error",
+      bookings: [],
+    });
+  }
+}
+
+
 
 //book-event
 
 async function handleCreateBooking(req, res) {
   try {
-    const booking = req.body;
+    // book-event/:eventId
+    const eventId = req.params.eventId
+    
 
-    if (!booking || !booking.userId || !booking.eventId) {
-      return res.status(400).json({ msg: "All fields are required" });
+    const userId = req.user.id; // JWT token
+
+    console.log("User:", req.user);
+    console.log("Event ID from params:", eventId);
+
+    if (!eventId || !userId) {
+      return res
+        .status(400)
+        .json({ msg: "Event ID and user must be provided" });
     }
 
     const new_booking = await Booking.create({
-      userId: booking.userId,
-      eventId: booking.eventId,
+      userId,
+      eventId,
     });
 
     console.log("New booking created: ", new_booking);
@@ -88,6 +178,7 @@ async function handleCreateBooking(req, res) {
 //cancel booking
 async function handleCancelBooking(req, res) {
   try {
+    
     const bookingId = req.params.Bookingid;
 
     const booking = await Booking.findById(bookingId);
@@ -141,9 +232,10 @@ async function handleShowAllBookings(req, res) {
   }
 }
 
-// profile
 
 export default {
+  handleUserProfile,
+  handleUserLogin,
   handleUserRegister,
   handleCancelBooking,
   handleCreateBooking,

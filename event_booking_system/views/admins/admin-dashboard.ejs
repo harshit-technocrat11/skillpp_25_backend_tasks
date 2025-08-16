@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+
+    <style>
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- message -->
+
+    <% if (locals.msg) { %>
+    <p><%= msg %></p>
+    <% } %> <% if (locals.name && locals.email) { %>
+    <h2>Admin name: <%= name %></h2>
+    <h2>email <%= email %></h2>
+    <% } %>
+
+    <br>
+
+    <form action="/admins/create-event" method="get">
+      <button
+        type="submit"
+      >
+        + Create New Event
+      </button>
+
+    </form>
+
+    
+    <br>
+    <br>
+    
+
+    <table border="1">
+      <thead>
+        <th>sl no.</th>
+        <th>event name</th>
+        <th>Venue</th>
+        <th>capacity</th>
+        <th>bookedSeats</th>
+        <th>date</th>
+        <th>Event ID</th>
+        <th>actions</th>
+      </thead>
+
+      <% events.forEach((event,index) => { %>
+      <tr>
+        <td><%= index+ 1 %></td>
+        <td><%= event.name %></td>
+        <td><%= event.location %></td>
+        <td><%= event.capacity %></td>
+        <td><%= event.bookedSeats %></td>
+        <td><%= event.date %></td>
+        <td><%= event._id %></td>
+        <td>
+          <a href="/admins/events/<%= event._id %>">
+            <button>update</button>
+          </a>
+
+          <!-- delete button -->
+
+          <form
+            action="/admins/events/<%= event._id %>?_method=DELETE"
+            method="POST"
+            style="display: inline"
+            onsubmit="return confirm('Are you sure you want to delete this event?');"
+          >
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </table>
+  </body>
+</html>

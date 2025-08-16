@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Registration</title>
+
+    <style>
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to</h1>
+    <h1>User Registration Page</h1>
+    
+
+    <form action="/users/register" method="post">
+      <label for="">Full Name:</label>
+      <input type="text" required name="name" />
+      <br />
+
+      <label for="">Email:</label>
+      <input type="email" required name="email" />
+      <br />
+
+      <label for="">Password:</label>
+      <input type="password" required name="password" />
+      <br />
+
+      <label for="">Confirm Password:</label>
+      <input type="password" required name="confirmPassword" />
+      <br />
+
+      <button type="submit">Register</button>
+    </form>
+
+    <% if (locals.error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+    <% if (locals.msg) { %>
+     <%= msg %>
+    <% } %>
+
+    
+    <p>Already have an account? <a href="/users/login">Login here</a></p>
+  </body>
+</html>

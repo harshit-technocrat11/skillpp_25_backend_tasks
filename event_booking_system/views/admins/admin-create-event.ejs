@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event</title>
+</head>
+<body>
+
+    <% if (locals.msg) { %>
+     <p><%= msg %></p>
+    <% } %>
+
+    <h3>enter Event details:</h3>
+
+    <form action="/admins/create-event" method="post">
+      <label for="">Event Name:</label>
+      <input required type="text" name="name" id="" />
+
+      <br />
+      <label for="">location:</label>
+      <input required type="text" name="location" id="" />
+      <br />
+
+      <label for="">capacity:</label>
+      <input required type="text" name="capacity" id="" />
+      <br />
+      <label for="">BookedSeats:</label>
+      <input required type="text"  name="bookedSeats" value="0" id="" />
+      <br />
+
+      <label for="">Date:</label>
+      <input required type="datetime-local" name="date" id="" />
+
+      <br />
+      <button type="submit">submit</button>
+    </form>
+
+
+
+
+
+     <h4>Go to admin dashboard</h4>
+    
+    <form action="/admins/dashboard" method="get">
+        <button type="submit">click here</button>
+    </form>
+</body>
+</html>

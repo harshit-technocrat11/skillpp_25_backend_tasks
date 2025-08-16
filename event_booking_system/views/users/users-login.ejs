@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Login</title>
+
+    <style>
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to</h1>
+    <h1>User Login Page</h1>
+    
+    <br>
+    <% if (locals.msg) { %>
+     <%= msg %>
+    <% } %>
+    <form action="/users/login" method="post">
+      <label for="">Email:</label>
+      <input type="email" required name="email" />
+
+      <br />
+
+      <label for="">Password:</label>
+      <input type="password" required name="password" />
+      <br />
+
+      <button type="submit">Login</button>
+    </form>
+
+    <% if (locals.error) { %>
+      <p style="color: red;"><%= error %></p>
+    <% } %>
+
+
+    <p>Don't have an account? <a href="/users/register">Register here</a></p>
+  </body>
+</html>
